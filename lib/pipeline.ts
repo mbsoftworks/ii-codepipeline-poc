@@ -20,10 +20,11 @@ export class PipelineStack extends Stack {
             pipelineName,
             synth: new pipelines.ShellStep('Synthesize', {
                 commands: [
-                    'cd infrastructure',
                     'npm ci',
                     'npm run build',
                     'npm run cdk -- synth',
+                    'ls',
+                    'ls ..',
                 ],
                 input: pipelines.CodePipelineSource.gitHub(
                     'mbsoftworks/ii-codepipeline-poc',
@@ -33,7 +34,6 @@ export class PipelineStack extends Stack {
                             jsonField: 'token'
                         })
                     }),
-                primaryOutputDirectory: 'infrastructure/cdk.out',
             }),
             synthCodeBuildDefaults: {
                 buildEnvironment: {
