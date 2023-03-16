@@ -7,6 +7,10 @@ import {
 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
+import { stages } from '../../ii-app1-poc/infrastructure/lib/pipeline'
+
+const APP_PATH = '../ii-app1-poc';
+
 export class PipelineStack extends Stack {
     readonly PROJECT_NAME = 'app1-poc';
 
@@ -20,7 +24,7 @@ export class PipelineStack extends Stack {
             pipelineName,
             synth: new pipelines.ShellStep('Synthesize', {
                 additionalInputs: {
-                    '../app1': pipelines.CodePipelineSource.gitHub(
+                    [APP_PATH]: pipelines.CodePipelineSource.gitHub(
                         'mbsoftworks/ii-app1-poc',
                         'main',
                         {
@@ -30,11 +34,10 @@ export class PipelineStack extends Stack {
                         }),
                 },
                 commands: [
+                    `cd ${APP_PATH}/infrastructure/ && npm ci && cd -`,
                     'npm ci',
                     'npm run build',
                     'npm run cdk -- synth',
-                    'ls',
-                    'ls ..',
                 ],
                 input: pipelines.CodePipelineSource.gitHub(
                     'mbsoftworks/ii-codepipeline-poc',
@@ -52,5 +55,7 @@ export class PipelineStack extends Stack {
                 },
             },
         });
+
+        stages(pipeline).forEach((stage, _) => pipeline.addStage(stage));
     }
 }
