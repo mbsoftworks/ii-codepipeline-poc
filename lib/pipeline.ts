@@ -7,7 +7,7 @@ import {
 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
-import { stages } from '../../ii-app1-poc/infrastructure/lib/pipeline'
+import { addDeployments } from '../../ii-app1-poc/infrastructure/lib/pipeline'
 
 const APP_PATH = '../ii-app1-poc';
 
@@ -56,6 +56,6 @@ export class PipelineStack extends Stack {
             },
         });
 
-        stages(pipeline).forEach((stage, _) => pipeline.addStage(stage));
+        addDeployments(pipeline);
     }
 }
