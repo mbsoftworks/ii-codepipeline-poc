@@ -19,6 +19,16 @@ export class PipelineStack extends Stack {
             dockerEnabledForSynth: true,
             pipelineName,
             synth: new pipelines.ShellStep('Synthesize', {
+                additionalInputs: {
+                    '../app1': pipelines.CodePipelineSource.gitHub(
+                        'mbsoftworks/ii-app1-poc',
+                        'main',
+                        {
+                            authentication: SecretValue.secretsManager('/ii-codepipeline-poc/github', {
+                                jsonField: 'token'
+                            })
+                        }),
+                },
                 commands: [
                     'npm ci',
                     'npm run build',
