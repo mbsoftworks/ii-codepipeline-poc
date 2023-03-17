@@ -34,9 +34,14 @@ export class PipelineStack extends Stack {
                         }),
                 },
                 commands: [
-                    `cd ${APP_PATH}/infrastructure/ && npm ci && cd -`,
+                    `cd ${APP_PATH}`,
+                    'make test',
+                    'cd ./infrastructure',
                     'npm ci',
-                    'npm run build',
+                    'npm run test',
+                    'cd ${CODEBUILD_SRC_DIR}',
+                    'npm ci',
+                    'npm run test',
                     'npm run cdk -- synth',
                 ],
                 input: pipelines.CodePipelineSource.gitHub(
